@@ -1,6 +1,18 @@
 version: '2.2'
 services:
-
+  web:
+    image: httpd
+    ports:
+      - "8082:80"
+    logging:
+      driver: "fluentd"
+      options:
+        fluentd-address: localhost:24224
+        tag: httpd.access
+    links:
+      - fluent-bit
+    networks:
+      - elastic
   fluent-bit:
     image: fluent/fluent-bit:1.5
     volumes:
@@ -43,6 +55,7 @@ services:
     environment:
       ELASTICSEARCH_URL: http://es01:9200
       ELASTICSEARCH_HOSTS: http://es01:9200
+      XPACK_ENCRYPTEDSAVEDOBJECTS_ENCRYPTIONKEY: "MY_SECRET_KEYMY_SECRET_KEYMY_SECRET_KEYMY_SECRET_KEY"
     networks:
       - elastic
 
