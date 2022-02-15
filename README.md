@@ -5,25 +5,31 @@ An example docker-compose.yaml file and configurations file for testing collecti
 ### Usage
 
 ```bash
+# Starting 
 docker-compose up -d
 ```
 
-### Dashboard  
-
-    - Elasticsearch: 
+````bash
+# Removing
+docker-compose down
 ```
+
+### Dashboard  
+ 
+```
+- Sample Web Server with Httpd for log access_log from stdout:
+    http://localhost:8082/  
+```
+
+```
+- Elasticsearch: 
     http://localhost:9200/  
     http://localhost:9200/_cat/indices
 ```
-
-    - Kibana: 
+ 
 ```
+- Kibana:
     http://localhost:5601/  
-```
-
-    - Sample Web Server with Httpd for log access_log from stdout: 
-```
-    http://localhost:8082/  
 ```
 
 
