@@ -9,7 +9,7 @@ An example docker-compose.yaml file and configurations file for testing collecti
 docker-compose up -d
 ```
 
-````bash
+```bash
 # Removing
 docker-compose down
 ```
