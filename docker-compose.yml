@@ -1,24 +1,27 @@
 version: '2.2'
 services:
-  web:
-    image: httpd
+  # Hello World Go service inside ./go-hello-http
+  go-hello-http:
+    container_name: go-hello-http
+    build :
+      context: ./go-hello-http
+      dockerfile: ./Dockerfile
     ports:
-      - "8082:80"
+      - "9090:9090"
     logging:
       driver: "fluentd"
       options:
         fluentd-address: localhost:24224
-        tag: httpd.access
-    links:
-      - fluent-bit
+        tag: "go-hello-http.access"
     networks:
-      - elastic
+      - alyaefknet
+    depends_on:
+      - fluent-bit
+  # fluentbit log collector service
   fluent-bit:
     image: fluent/fluent-bit:1.5
     volumes:
       - ./fluent-bit/conf:/fluent-bit/etc
-    links:
-      - "elasticsearch"
     ports:
       - 24224:24224
       - 5140:5140/udp
@@ -29,22 +32,22 @@ services:
             max-size: 100m
             max-file: "5"
     networks:
-      - elastic
-
+      - alyaefknet
+  # elasticsearch data store
   elasticsearch:
     image: docker.elastic.co/elasticsearch/elasticsearch:7.8.1
     container_name: es01
     ports:
       - "9200:9200"
     networks:
-      - elastic
+      - alyaefknet
     environment:
       - node.name=es01
       - cluster.name=es-docker-cluster
       - bootstrap.memory_lock=false
       - cluster.initial_master_nodes=es01
       - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
-
+  # kibana dashboard service
   kibana:
     image: docker.elastic.co/kibana/kibana:7.8.1
     container_name: kib01
@@ -57,9 +60,9 @@ services:
       ELASTICSEARCH_HOSTS: http://es01:9200
       XPACK_ENCRYPTEDSAVEDOBJECTS_ENCRYPTIONKEY: "MY_SECRET_KEYMY_SECRET_KEYMY_SECRET_KEYMY_SECRET_KEY"
     networks:
-      - elastic
+      - alyaefknet
 
 networks:
-  elastic:
+  alyaefknet:
     driver: bridge
 
